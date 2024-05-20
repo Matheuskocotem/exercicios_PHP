@@ -362,45 +362,57 @@ echo "o preço da venda do produto é: R$" . $preco_venda;
 //pq me fazes sofrer nesse?
 
 <?php
+
+// ja disse que me fazes chorar aqui?
 $jogadores = [
-    'Jogador A' => 2,
-    'Jogador B' => 2,
-    'Jogador C' => 1,
+    'Jogador A' => (int)readline("Digite o número de dedos do Jogador A: "),
+    'Jogador B' => (int)readline("Digite o número de dedos do Jogador B: "),
+    'Jogador C' => (int)readline("Digite o número de dedos do Jogador C: "),
 ];
+
 
 $contagem = array_count_values($jogadores);
 $vencedorDoisOuUm = null;
 
-foreach ($jogadores as $jogador => $escolha) {
-    if ($contagem[$escolha] == 1) {
-        $vencedorDoisOuUm = $jogador;
-        break;
+foreach ($contagem as $dedos => $quantidade) {
+    if ($quantidade == 1) {
+        foreach ($jogadores as $jogador => $escolha) {
+            if ($escolha == $dedos) {
+                $vencedorDoisOuUm = $jogador;
+                break 2;
+            }
+        }
     }
 }
 
 if ($vencedorDoisOuUm) {
     echo "Vencedor do 'dois-ou-um': $vencedorDoisOuUm\n";
+    
+    $escolhaParOuImpar = readline("O vencedor escolhe 'par' ou 'ímpar'? ");
 
-    foreach ($jogadores as $jogador => $escolha) {
-        if ($jogador != $vencedorDoisOuUm) {
-            $adversario = $jogador;
-            break;
-        }
+    $adversarios = array_filter(array_keys($jogadores), function($jogador) use ($vencedorDoisOuUm) {
+        return $jogador !== $vencedorDoisOuUm;
+    });
+
+    $adversario = array_values($adversarios)[0]; 
+    
+    $dedosVencedor = (int)readline("Digite o número de dedos do vencedor ($vencedorDoisOuUm): ");
+    $dedosAdversario = (int)readline("Digite o número de dedos do adversário ($adversario): ");
+    
+    $soma = $dedosVencedor + $dedosAdversario;
+    $resultado = ($soma % 2 == 0) ? 'par' : 'ímpar';
+
+    if ($escolhaParOuImpar == $resultado) {
+        $vencedorParOuImpar = $vencedorDoisOuUm;
+    } else {
+        $vencedorParOuImpar = $adversario;
     }
-    $escolhasParOuImpar = [
-        $vencedorDoisOuUm => 3, 
-        $adversario => 2 // 
-    ];
-    $soma = array_sum($escolhasParOuImpar);
-    $resultadoParOuImpar = ($soma % 2 == 0) ? 'par' : 'ímpar';
-
-    $escolhaVencedor = 'par';
-    $vencedorFinal = ($resultadoParOuImpar == $escolhaVencedor) ? $vencedorDoisOuUm : $adversario;
-
-    echo "Vencedor do 'par-ou-ímpar': $vencedorFinal\n";
+    
+    echo "Vencedor do 'par-ou-ímpar': $vencedorParOuImpar\n";
 } else {
-    echo "Empate na rodada 'dois-ou-um'\n";
+    echo "Não houve vencedor no 'dois-ou-um'.\n";
 }
+
 ?>
 ---------------------------------------------------------------------------------
 
